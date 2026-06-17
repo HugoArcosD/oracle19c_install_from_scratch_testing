@@ -1,9 +1,20 @@
 # Oracle 19c Automation Lab (WSL)
 
-This repository contains a set of scripts designed to automate the complete lifecycle of Oracle Database 19c instances on WSL (Windows Subsystem for Linux).
+A collection of automation scripts for managing the complete lifecycle of Oracle Database 19c instances running on WSL (Windows Subsystem for Linux).
+
+## Features
+
+* Automated Oracle 19c software installation
+* Dynamic listener creation and removal
+* Automated database creation
+* Start/stop management with state preservation
+* Complete environment cleanup
+* Designed for labs, testing, training, and Proof of Concepts (PoC)
+
+---
 
 ## Project Structure
-All scripts are located in the root directory:
+
 ```text
 .
 ├── 01_setup_dirs.sh
@@ -15,46 +26,121 @@ All scripts are located in the root directory:
 ├── 07_start_all.sh
 ├── nuke_oracle.sh
 └── README.md
+```
 
-Quick Start Guide
-- Software Installation
-Install prerequisites and Oracle 19c binaries:
+---
+
+## Quick Start
+
+### 1. Install Oracle Software
+
+Prepare directories and install Oracle 19c binaries:
+
+```bash
 ./01_setup_dirs.sh
 sudo ./02_install_software.sh /path/to/oracle-database-ee-19c.rpm
+```
 
-- Network Management (Listeners)
-Create or drop listeners dynamically:
-# Create: LISTENER on port 1521
+---
+
+### 2. Listener Management
+
+Create a listener dynamically:
+
+```bash
 ./03_create_listener_dynamic.sh LISTENER 1521
+```
 
-# Drop:
+Remove a listener:
+
+```bash
 ./03_drop_listener_dynamic.sh LISTENER
+```
 
-- Database Management
-Create a new database (the script will automatically relocate control files and prompt for a SYS password):
+---
+
+### 3. Database Creation
+
+Create a new database:
+
+```bash
 ./04_create_database_full.sh TESTDB1
+```
 
-Maintenance Operations
-Manage services (automatically saves/restores the state of active processes):
-# Stop all Oracle services and save the current state
+The script will:
+
+* Prompt for a SYS password
+* Create the database
+* Relocate control files automatically
+* Configure the instance
+
+---
+
+## Maintenance Operations
+
+### Stop Oracle Services
+
+Saves the current state of running services before shutdown:
+
+```bash
 ./06_stop_all.sh
+```
 
-# Start services based on the saved state
+### Start Oracle Services
+
+Restores services based on the previously saved state:
+
+```bash
 ./07_start_all.sh
+```
 
-Cleanup (Nuke)
-Wipe your environment:
-# Wipe only databases and data files
+---
+
+## Environment Cleanup
+
+### Remove Databases Only
+
+Deletes all databases and associated data files while keeping Oracle software installed:
+
+```bash
 sudo ./nuke_oracle.sh
+```
 
-# Wipe EVERYTHING, including software binaries
+### Remove Everything
+
+Deletes databases, configuration files, and Oracle software binaries:
+
+```bash
 sudo ./nuke_oracle.sh --software
+```
 
-Security & Usage Notes
-Passwords: Scripts use read -s or environment variables to ensure sensitive data is not hardcoded or stored in command history.
+---
 
-Privileges: Scripts that interact with OS files or binaries require sudo. Database management scripts should be executed as the oracle user.
+## Security Notes
 
-Environment: Ensure your environment variables (like ORACLE_HOME and PATH) are correctly configured in your .bashrc or .ora_env19c.
+* Passwords are never hardcoded.
+* Sensitive input is collected using `read -s` or environment variables.
+* Scripts requiring filesystem modifications must be executed with `sudo`.
+* Database administration scripts should be executed as the `oracle` user.
 
-Developed for automated test environments and Proof of Concepts (PoC).
+---
+
+## Requirements
+
+* Windows Subsystem for Linux (WSL2)
+* Oracle Linux / RHEL-compatible distribution
+* Oracle Database 19c RPM package
+* Bash shell
+
+---
+
+## Disclaimer
+
+This project is intended for:
+
+* Learning Oracle administration
+* Automated testing environments
+* Demonstrations
+* Proof of Concepts (PoC)
+
+It is **not intended for production use without proper review and validation**.
